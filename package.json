@@ -1,0 +1,30 @@
+{
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "description": "Employee Tracker App Using Inquirer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MMMPhoto/employee-tracker.git"
+  },
+  "keywords": [
+    "server",
+    "MySQL",
+    "node",
+    "Inquirer"
+  ],
+  "author": "Max McDonough",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MMMPhoto/employee-tracker/issues"
+  },
+  "homepage": "https://github.com/MMMPhoto/employee-tracker#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "inquirer": "^9.0.2"
+  }
+}
