@@ -1,3 +1,11 @@
+let roleDepartment = [];
+import express from 'express';
+import mysql from 'mysql2';
+// import getDepartments from './queries.js';
+
+// let roleDepartment = getDepartments()
+
+
 const questions = [
     {
         type: 'list',
@@ -28,7 +36,7 @@ const questions = [
         message: "Which Department is the new Role in?",
         name: 'newRoleDepartment',
         // TO DO: Find way to input Department choices dynamically
-        choices: ["Marketing", "Quality Control", "Development", "Accounting"],
+        choices: roleDepartment,
         when: (answers) => answers.actionChoice === 'Add a Role',
     },
     {
@@ -61,5 +69,5 @@ const questions = [
     }
     // TO DO: Add prompts for Updating Employee Role
 ];
-    
-    export default questions;
+
+export default questions;
