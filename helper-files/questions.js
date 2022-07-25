@@ -1,8 +1,9 @@
-let roleDepartment = [];
-import express from 'express';
 import mysql from 'mysql2';
 // import getDepartments from './queries.js';
 
+let departmentList;
+let roleList;
+let managerList;
 // let roleDepartment = getDepartments()
 
 
@@ -35,8 +36,7 @@ const questions = [
         type: 'list',
         message: "Which Department is the new Role in?",
         name: 'newRoleDepartment',
-        // TO DO: Find way to input Department choices dynamically
-        choices: roleDepartment,
+        choices: departmentList,
         when: (answers) => answers.actionChoice === 'Add a Role',
     },
     {
@@ -55,8 +55,7 @@ const questions = [
         type: 'list',
         message: "What is the new Employee's Role?",
         name: 'newEmployeeRole',
-        // TO DO: Find way to input Role choices dynamically
-        choices: ["Marketing Manager", "Senior Developer", "Accountant"],
+        choices: roleList,
         when: (answers) => answers.actionChoice === 'Add an Employee',
     },
     {
@@ -64,7 +63,7 @@ const questions = [
         message: "Who is the new Employee's Manager?",
         name: 'newEmployeeManager',
         // TO DO: Find way to input Manager choices dynamically
-        choices: ["Robert Specktor", "Elizabeth Brokaw", "Patrick Whitacker", "Jessica Nysmith", "None"],
+        choices: managerList,
         when: (answers) => answers.actionChoice === 'Add an Employee',
     }
     // TO DO: Add prompts for Updating Employee Role

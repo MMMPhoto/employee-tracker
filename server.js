@@ -1,20 +1,11 @@
 // Import Modules and files
-// import express from 'express';
 import mysql from 'mysql2';
 import inquirer from 'inquirer';
 import ctable from 'console.table';
+let answers;
+// import questions from './helper-files/questions.js';
 // import getDepartments from './helper-files/queries.js';
 // import userInput from './helper-files/inquirer.js';
-// import questions from './helper-files/questions.js';
-
-
-
-// const PORT = process.env.PORT || 3001;
-// const app = express();
-
-// // Set express middleware
-// app.use(express.urlencoded({ extended: false }));
-// app.use(express.json());
 
 // Create database connection
 const database = mysql.createConnection(
@@ -24,7 +15,7 @@ const database = mysql.createConnection(
         password: 'My$ql1981',
         database: 'company_db'    
     },
-    console.log('Connected to company database.')
+    console.log('Welcome to the company database!')
 );
 
 // MySQL query to get departments
@@ -36,30 +27,24 @@ function databaseQuery(sql) {
     });
 };
 
-// Async funtion to get departments
+// Async funtion for Inquirer 
 async function userInterface() {
     // Pull choice lists from database for Inquirer prompt
     let departmentList = await databaseQuery('SELECT name FROM department');
     let roleList = await databaseQuery('SELECT title FROM role');
-    roleList = roleList.map(item => {return {name: item.title}});
     let managerList = await databaseQuery('SELECT first_name, last_name FROM employee WHERE manager_id is NULL');
-    // managerFirstNames = managerList.map(item => item.first_name);
-    // managerLastNames = managerList.map(item => item.first_name);
-    // managerList = managerList.forEach(element => {
-        
+    // Format choice lists for Inquirer prompt
+    roleList = roleList.map(item => {return {name: item.title}});        
     managerList = managerList.map(item => {return {name: `${item.first_name} ${item.last_name}`}});
-    
-    // managerList = managerList.map(item => return {name: })
     managerList.push({name: 'No Manager'});
-    console.log(departmentList);
-    console.log(roleList);
-    console.log(managerList);
+    console.log('-------------');
+    // Inquirer questions
     inquirer.prompt([
         {
-            type: 'list',
-            message: 'Welcome to the company database! What would you like to do?',
+            type: 'rawlist',
+            message: 'What would you like to do?',
             name: 'actionChoice',
-            choices: ['View all Departments', 'View all Roles', 'View all Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role'],
+            choices: ['View all Departments', 'View all Roles', 'View all Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role']
         },
         {
             type: 'input',
@@ -80,7 +65,7 @@ async function userInterface() {
             when: (answers) => answers.actionChoice === 'Add a Role',
         },
         {
-            type: 'list',
+            type: 'rawlist',
             message: "Which Department is the new Role in?",
             name: 'newRoleDepartment',
             choices: departmentList,
@@ -99,24 +84,47 @@ async function userInterface() {
             when: (answers) => answers.actionChoice === 'Add an Employee',
         },
         {
-            type: 'list',
+            type: 'rawlist',
             message: "What is the new Employee's Role?",
             name: 'newEmployeeRole',
             choices: roleList,
             when: (answers) => answers.actionChoice === 'Add an Employee',
         },
         {
-            type: 'list',
+            type: 'rawlist',
             message: "Who is the new Employee's Manager?",
             name: 'newEmployeeManager',
-            // TO DO: Find way to input Manager choices dynamically
             choices: managerList,
             when: (answers) => answers.actionChoice === 'Add an Employee',
         }
-        // TO DO: Add prompts for Updating Employee Role
     ])
+    // Return Inquirer Answers
     .then((answers) => {
-        console.log(answers);
+        displayAnswers(answers);
+        console.log('-------------');
+    });
+};
+
+const displayAnswers = async (answers) => {
+    if (answers.actionChoice === "View all Departments") {
+        let departmentTable = await databaseQuery('SELECT * FROM department');
+        console.table(departmentTable);
+    } else if (answers.actionChoice === "View all Roles") {
+        let roleTable = await databaseQuery('SELECT * FROM role');
+        console.table(roleTable);
+    };
+    await console.log('-------------');
+    await inquirer.prompt([
+        {
+            type: 'confirm',
+            message: 'Would you like to do anything else?',
+            name: 'promptAgain'
+        }
+    ])
+    .then((again) => {
+        if (again.promptAgain) {
+            userInterface();
+        };
     });
 };
 
@@ -127,10 +135,5 @@ database.connect(function(err) {
     };
     userInterface();
 });   
-
-// Set listening on PORT
-// app.listen(PORT, () => 
-//     console.log(`App listening on ${PORT}`)
-// );
 
 // export default database;
