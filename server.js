@@ -100,19 +100,25 @@ async function userInterface() {
     ])
     // Return Inquirer Answers
     .then((answers) => {
-        displayAnswers(answers);
-        console.log('-------------');
+        useAnswers(answers);
     });
 };
 
-const displayAnswers = async (answers) => {
+const useAnswers = async (answers) => {
     if (answers.actionChoice === "View all Departments") {
         let departmentTable = await databaseQuery('SELECT * FROM department');
+        console.log('Departments');
         console.table(departmentTable);
     } else if (answers.actionChoice === "View all Roles") {
         let roleTable = await databaseQuery('SELECT * FROM role');
+        console.log('Roles');
         console.table(roleTable);
-    };
+    } else if (answers.actionChoice === "View all Employees") {
+        let employeeTable = await databaseQuery('SELECT * FROM employee');
+        console.log('Employees');
+        console.table(employeeTable);
+
+    }
     await console.log('-------------');
     await inquirer.prompt([
         {
