@@ -2,21 +2,13 @@
 import mysql from 'mysql2';
 import inquirer from 'inquirer';
 import ctable from 'console.table';
+import database from './config/connection.js';
 let answers;
 // import questions from './helper-files/questions.js';
 // import getDepartments from './helper-files/queries.js';
 // import userInput from './helper-files/inquirer.js';
 
-// Create database connection
-const database = mysql.createConnection(
-    {
-        host: 'localhost',
-        user: 'root',
-        password: 'My$ql1981',
-        database: 'company_db'    
-    },
-    console.log('Welcome to the company database!')
-);
+
 
 // MySQL query to get departments
 function databaseQuery(sql) {
