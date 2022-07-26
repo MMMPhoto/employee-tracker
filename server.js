@@ -3,21 +3,9 @@ import mysql from 'mysql2';
 import inquirer from 'inquirer';
 import ctable from 'console.table';
 import database from './config/connection.js';
-let answers;
+import databaseQuery from './helper-files/queries.js';
 // import questions from './helper-files/questions.js';
-// import getDepartments from './helper-files/queries.js';
 // import userInput from './helper-files/inquirer.js';
-
-
-
-// MySQL query to get departments
-function databaseQuery(sql) {
-    return new Promise((resolve, reject) => {
-        database.query(sql, (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
-};
 
 // Async funtion for Inquirer 
 async function userInterface() {

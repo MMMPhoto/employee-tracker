@@ -1,11 +1,10 @@
-import express from 'express';
 import mysql from 'mysql2';
-// import database from '../server.js';
+import database from '../config/connection.js';
 
-// Get list of Departments in database
-export default function getDepartments() {
+// MySQL query function
+export default function databaseQuery(sql) {
     return new Promise((resolve, reject) => {
-        database.query('SELECT name FROM department', (err, results) => {
+        database.query(sql, (err, results) => {
             err ? reject(err) : resolve(results);
         });
     });
