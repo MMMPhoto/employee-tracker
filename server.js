@@ -86,17 +86,17 @@ async function userInterface() {
 
 const useAnswers = async (answers) => {
     if (answers.actionChoice === "View all Departments") {
-        let departmentTable = await databaseQuery('SELECT * FROM department');
-        console.log('Departments');
-        console.table(departmentTable);
+        let displayTable = await databaseQuery("SELECT department.id AS 'ID', department.name AS 'Name' FROM department");
+        console.log('');
+        console.table(displayTable);
     } else if (answers.actionChoice === "View all Roles") {
-        let roleTable = await databaseQuery('SELECT * FROM role');
-        console.log('Roles');
-        console.table(roleTable);
+        let displayTable = await databaseQuery("SELECT role.id AS 'ID', role.title AS 'Title', role.salary AS 'Salary', department.name AS 'Department' FROM role JOIN department ON role.department_id = department.id;");
+        console.log('');
+        console.table(displayTable);
     } else if (answers.actionChoice === "View all Employees") {
-        let employeeTable = await databaseQuery('SELECT * FROM employee');
-        console.log('Employees');
-        console.table(employeeTable);
+        let displayTable = await databaseQuery("SELECT a.id AS 'ID', a.first_name AS 'First Name', a.last_name AS 'Last Name', role.title AS 'Job Title', department.name AS 'Department', role.salary AS 'Salary', CONCAT(b.first_name, ' ', b.last_name) AS 'Manager' FROM employee a JOIN role ON a.role_id = role.id JOIN department ON role.department_id = department.id LEFT OUTER JOIN employee b ON a.manager_id = b.id;");
+        console.log('');
+        console.table(displayTable);
 
     }
     await console.log('-------------');
@@ -120,6 +120,4 @@ database.connect(function(err) {
       return console.error('error: ' + err.message);
     };
     userInterface();
-});   
-
-// export default database;
+});
