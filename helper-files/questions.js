@@ -2,13 +2,16 @@ import databaseQuery from './queries.js';
 
 // Pull choice lists from database for Inquirer prompt
 let departmentList = await databaseQuery('SELECT name FROM department');
-let roleList = await databaseQuery('SELECT title FROM role');
-let managerList = await databaseQuery('SELECT first_name, last_name FROM employee WHERE manager_id is NULL');
+let roleList = await databaseQuery('SELECT id, title FROM role');
+let managerRawList = await databaseQuery('SELECT id, first_name, last_name FROM employee WHERE manager_id is NULL');
 
 // Format choice lists for Inquirer prompt
 roleList = roleList.map(item => {return {name: item.title}});        
-managerList = managerList.map(item => {return {name: `${item.first_name} ${item.last_name}`}});
+let managerList = managerRawList.map(item => {return {name: `${item.first_name} ${item.last_name}`}});
 managerList.push({name: 'No Manager'});
+console.log(managerRawList);
+console.log(managerList);
+
 
 const questions = [
     {
@@ -67,6 +70,20 @@ const questions = [
         name: 'newEmployeeManager',
         choices: managerList,
         when: (answers) => answers.actionChoice === 'Add an Employee',
+    },
+    {
+        type: 'rawList',
+        message: "Which Employee's Role do you want to update?",
+        name: 'updateEmployee',
+        choices: EmployeeList,
+        when: (answers) => answers.actionChoice === 'Update an Employee Role',
+    },
+    {
+        type: 'rawList',
+        message: "What is the Employee's new Role?",
+        name: 'updateEmployeeRole',
+        choices: roleList,
+        when: (answers) => answers.actionChoice === 'Update an Employee Role',
     }
 ];
 
