@@ -4,6 +4,7 @@ import inquirer from 'inquirer';
 import cTable from 'console.table';
 import database from './config/connection.js';
 import databaseQuery from './helper-files/queries.js';
+import * as query from './helper-files/queries.js';
 import questions from './helper-files/questions.js';
 // import userInput from './helper-files/inquirer.js';
 
@@ -20,11 +21,11 @@ async function userInterface() {
 const tableDisplay = async (answers) => {
     let displayTable;
     if (answers.actionChoice === "View all Departments") {
-        displayTable = await databaseQuery("SELECT department.id AS 'ID', department.name AS 'Name' FROM department");
+        displayTable = await databaseQuery(query.viewDepartments);
     } else if (answers.actionChoice === "View all Roles") {
-        displayTable = await databaseQuery("SELECT role.id AS 'ID', role.title AS 'Title', role.salary AS 'Salary', department.name AS 'Department' FROM role JOIN department ON role.department_id = department.id;");
+        displayTable = await databaseQuery(query.viewRoles);
     } else if (answers.actionChoice === "View all Employees") {
-        displayTable = await databaseQuery("SELECT a.id AS 'ID', a.first_name AS 'First Name', a.last_name AS 'Last Name', role.title AS 'Job Title', department.name AS 'Department', role.salary AS 'Salary', CONCAT(b.first_name, ' ', b.last_name) AS 'Manager' FROM employee a JOIN role ON a.role_id = role.id JOIN department ON role.department_id = department.id LEFT OUTER JOIN employee b ON a.manager_id = b.id;");
+        displayTable = await databaseQuery(query.viewEmployees);
     };
     console.log('');
     console.table(displayTable);
@@ -51,12 +52,18 @@ const updateDatabase = async (answers) => {
             newEmployeeManagerID = await databaseQuery(`SELECT id FROM employee WHERE first_name = "${managerNameArray[0]}" AND last_name = "${managerNameArray[1]}"`);
             newEmployeeManagerID = newEmployeeManagerID[0].id;
         };
-        console.log(answers.newEmployeeFirstName);
-        console.log(answers.newEmployeeLastName);
-
         await databaseQuery(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${answers.newEmployeeFirstName}", "${answers.newEmployeeLastName}", "${newEmployeeRole}", "${newEmployeeManagerID}")`);
         console.log(`New Employee "${answers.newEmployeeFirstName} ${answers.newEmployeeLastName}" added.`);
-    };
+    } else if (answers.actionChoice === "Update an Employee Role") {
+        let updateEmployeeRole = await databaseQuery(`SELECT id FROM role WHERE title = "${answers.updateEmployeeRole}";`);
+        let updateEmployeeRoleID = updateEmployeeRole[0].id;
+        let updateEmployeeID;
+        const employeeNameArray = answers.updateEmployee.split(' ');
+            updateEmployeeID = await databaseQuery(`SELECT id FROM employee WHERE first_name = "${employeeNameArray[0]}" AND last_name = "${employeeNameArray[1]}"`);
+        updateEmployeeID = updateEmployeeID[0].id;
+        await databaseQuery(`UPDATE employee SET role_id = "${updateEmployeeRoleID}" WHERE id = "${updateEmployeeID}";`);
+        console.log(`Role of Employee "${answers.updateEmployee}" updated to "${answers.updateEmployeeRole}".`);
+    }
 };
 
 const useAnswers = async (answers) => {
