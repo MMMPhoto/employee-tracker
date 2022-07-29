@@ -1,10 +1,11 @@
-import databaseQuery from './queries.js';
+import databaseQuery, { getDepartments } from './queries.js';
+import * as query from './queries.js';
 
 // Pull choice lists from database for Inquirer prompt
-let departmentList = await databaseQuery('SELECT name FROM department');
-let roleList = await databaseQuery('SELECT title FROM role');
-let managerList = await databaseQuery('SELECT first_name, last_name FROM employee WHERE manager_id is NULL');
-let employeeList = await databaseQuery('SELECT first_name, last_name FROM employee');
+let departmentList = await databaseQuery(query.getDepartments);
+let roleList = await databaseQuery(query.getRoles);
+let managerList = await databaseQuery(query.getManagers);
+let employeeList = await databaseQuery(query.getEmployees);
 
 
 // Format choice lists for Inquirer prompt
