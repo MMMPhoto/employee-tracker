@@ -28,7 +28,7 @@ async function userInterface() {
             type: 'rawlist',
             message: 'What would you like to do?',
             name: 'actionChoice',
-            choices: ['View all Departments', 'View all Roles', 'View all Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role']
+            choices: ['View all Departments', 'View all Roles', 'View all Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role', 'Delete a Department', 'Delete a Role', 'Delete an Employee']
         },
         {
             type: 'input',
@@ -52,7 +52,7 @@ async function userInterface() {
         {
             type: 'rawlist',
             message: "Which Department is the new Role in?",
-            name: 'newRoleDepartment',
+            name: 'chooseDepartment',
             choices: departmentList,
             when: (answers) => answers.actionChoice === 'Add a Role',
         },
@@ -95,6 +95,27 @@ async function userInterface() {
             name: 'updateEmployeeRole',
             choices: roleList,
             when: (answers) => answers.actionChoice === 'Update an Employee Role',
+        },
+        {
+            type: 'rawlist',
+            message: "Which Department would you like to Delete?",
+            name: 'chooseDepartment',
+            choices: departmentList,
+            when: (answers) => answers.actionChoice === 'Delete a Department',
+        },
+        {
+            type: 'rawlist',
+            message: "Which Role would you like to Delete?",
+            name: 'deleteRole',
+            choices: roleList,
+            when: (answers) => answers.actionChoice === 'Delete a Role',
+        },
+        {
+            type: 'rawlist',
+            message: "Which Employee would you like to Delete?",
+            name: 'deleteEmployee',
+            choices: employeeList,
+            when: (answers) => answers.actionChoice === 'Delete an Employee',
         }
     ])
     .then((answers) => {
@@ -119,6 +140,13 @@ const tableDisplay = async (answers) => {
 
 // Function to update the database based on user input
 const updateDatabase = async (answers) => {
+
+    // Functions to get data from Database
+    const getDepartmentID = async (answers) => {
+        let getDepartment = await databaseQuery(`SELECT id FROM department WHERE name = "${answers.chooseDepartment}";`);
+        getDepartment = getDepartment[0].id;
+    };
+
     // If user chose to Add Department
     if (answers.actionChoice === "Add a Department") {
         await databaseQuery(`INSERT INTO department (name) VALUES  ("${answers.newDepartment}")`)
@@ -126,9 +154,8 @@ const updateDatabase = async (answers) => {
     } 
      // If User chose to Add Role
     else if (answers.actionChoice === "Add a Role") {
-        let newRoleDepartment = await databaseQuery(`SELECT id FROM department WHERE name = "${answers.newRoleDepartment}";`);
-        newRoleDepartment = newRoleDepartment[0].id;
-        await databaseQuery(`INSERT INTO role (title, salary, department_id) VALUES ("${answers.newRole}", "${answers.newRoleSalary}", "${newRoleDepartment}")`);
+        await getDepartmentID();        
+        await databaseQuery(`INSERT INTO role (title, salary, department_id) VALUES ("${answers.newRole}", "${answers.newRoleSalary}", "${getDepartment}")`);
         console.log(`New Role "${answers.newRole}" added.`);
     } 
     // If user chose to Add Employee
