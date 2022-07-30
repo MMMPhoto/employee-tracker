@@ -1,11 +1,9 @@
 // Import Modules and files
-import mysql from 'mysql2';
 import inquirer from 'inquirer';
 import cTable from 'console.table';
 import database from './config/connection.js';
 import databaseQuery from './helper-files/queries.js';
 import * as query from './helper-files/queries.js';
-import questions from './helper-files/questions.js';
 
 // Async funtion for Inquirer 
 async function userInterface() {
@@ -25,7 +23,7 @@ async function userInterface() {
     employeeList = employeeList.map(item => {return {name: `${item.first_name} ${item.last_name}`}});
 
     // Inquirer function
-    inquirer.prompt([
+    await inquirer.prompt([
         {
             type: 'rawlist',
             message: 'What would you like to do?',
@@ -46,8 +44,9 @@ async function userInterface() {
         },
         {
             type: 'input',
-            message: "Please enter the Salary for the new Role:",
+            message: "Please enter the Salary for the new Role (in US Dollars):",
             name: 'newRoleSalary',
+            validate: (answer) => {return (isNaN(answer)) ? "please enter a number" : true},
             when: (answers) => answers.actionChoice === 'Add a Role',
         },
         {
@@ -124,14 +123,16 @@ const updateDatabase = async (answers) => {
     if (answers.actionChoice === "Add a Department") {
         await databaseQuery(`INSERT INTO department (name) VALUES  ("${answers.newDepartment}")`)
         console.log(`New Department "${answers.newDepartment}" added.`)
-        // If User chose to Add Role
-    } else if (answers.actionChoice === "Add a Role") {
+    } 
+     // If User chose to Add Role
+    else if (answers.actionChoice === "Add a Role") {
         let newRoleDepartment = await databaseQuery(`SELECT id FROM department WHERE name = "${answers.newRoleDepartment}";`);
         newRoleDepartment = newRoleDepartment[0].id;
         await databaseQuery(`INSERT INTO role (title, salary, department_id) VALUES ("${answers.newRole}", "${answers.newRoleSalary}", "${newRoleDepartment}")`);
         console.log(`New Role "${answers.newRole}" added.`);
-        // If user chose to Add Employee
-    } else if (answers.actionChoice === "Add an Employee") {
+    } 
+    // If user chose to Add Employee
+    else if (answers.actionChoice === "Add an Employee") {
         // Work for Role value
         let newEmployeeRoleID = await databaseQuery(`SELECT id FROM role WHERE title = "${answers.newEmployeeRole}";`);
         newEmployeeRoleID = newEmployeeRoleID[0].id;
@@ -147,8 +148,9 @@ const updateDatabase = async (answers) => {
             await databaseQuery(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${answers.newEmployeeFirstName}", "${answers.newEmployeeLastName}", ${newEmployeeRoleID}, ${newEmployeeManagerID});`);
         };
         console.log(`New Employee "${answers.newEmployeeFirstName} ${answers.newEmployeeLastName}" added.`);
-        // If user chose to Update Employee
-    } else if (answers.actionChoice === "Update an Employee Role") {
+    }
+    // If user chose to Update Employee
+    else if (answers.actionChoice === "Update an Employee Role") {
         // Work for role value
         let updateEmployeeRoleID = await databaseQuery(`SELECT id FROM role WHERE title = "${answers.updateEmployeeRole}";`);
         updateEmployeeRoleID = updateEmployeeRoleID[0].id;
