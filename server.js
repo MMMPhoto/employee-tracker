@@ -139,6 +139,7 @@ const updateDatabase = async (answers) => {
         // Work for Manager ID value
         let newEmployeeManagerID;
         if (answers.newEmployeeManager === "No Manager") {
+            // Write new Employee with no manager
             await databaseQuery(`INSERT INTO employee (first_name, last_name, role_id) VALUES ("${answers.newEmployeeFirstName}", "${answers.newEmployeeLastName}", ${newEmployeeRoleID});`);
         } else {
             const managerNameArray = answers.newEmployeeManager.split(' ');
@@ -157,7 +158,7 @@ const updateDatabase = async (answers) => {
         // Work to get Employee ID
         let updateEmployeeID;
         const employeeNameArray = answers.updateEmployee.split(' ');
-            updateEmployeeID = await databaseQuery(`SELECT id FROM employee WHERE first_name = "${employeeNameArray[0]}" AND last_name = "${employeeNameArray[1]}"`);
+        updateEmployeeID = await databaseQuery(`SELECT id FROM employee WHERE first_name = "${employeeNameArray[0]}" AND last_name = "${employeeNameArray[1]}"`);
         updateEmployeeID = updateEmployeeID[0].id;
         // Write update Employee role to database
         await databaseQuery(`UPDATE employee SET role_id = "${updateEmployeeRoleID}" WHERE id = "${updateEmployeeID}";`);
