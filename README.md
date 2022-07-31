@@ -3,7 +3,7 @@
 
   ## Description
 
-  The Employee Tracker is a node.js app run entirely in the Command Line Interface, allowing the user to interact with their company's database. The app uses Inquirer to take input from the user, and communicates with a MySQL database. The user is able to see all of the company's departments, roles, employees, salaries, and managers, as well as the relationship between them all.
+  The Employee Tracker is a node.js app run entirely in the Command Line Interface, allowing the user to interact with their company's database. The app uses Inquirer to take input from the user, and communicates with a MySQL database. The user is able to view tables that show all of the company's departments, roles, employees, salaries, and managers, as well as the relationship between those data. In addition, user can manipulate the data in the table, by adding departments, roles, or employees, as well as updating an existing employee's role.
 
   ## Table of Contents
 
@@ -18,7 +18,7 @@
 
   ## Usage
 
-  To run the app, simply type "npm start" or "node server.js" in the command line of the root folder. The app will load the database and prompt the user on what they would like to do. Simply follow the on screen instructions and the app will provide the requested data or do the requested work. The initial prompt will ask the user if they would like to View all Departments, View all Roles, View all Employees, Add a Department, Add a Role, Add an Employee, or Update an Employee Role. Based on the choice, the app will either prompt the user for more data or display the desired data. The user can repeat the intial prompt as many times as they like  
+  To run the app, simply type "npm start" or "node server.js" in the command line of the root folder. The app will load the database and prompt the user on what they would like to do. Simply follow the on screen instructions and the app will provide the requested data or do the requested work. The initial prompt will ask the user if they would like to View all Departments, View all Roles, View all Employees, Add a Department, Add a Role, Add an Employee, or Update an Employee Role. Based on the choice, the app will either prompt the user for more data or display the desired data. The user can repeat the intial prompt as many times as they like.
 
   [Video walkthrough of Using the App](https://drive.google.com/file/d/1YCGkkhPIvaGsb9EqAhfwlhR3zxtDTEyd/view)
 
